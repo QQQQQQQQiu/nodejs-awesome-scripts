@@ -1,3 +1,5 @@
+import { exit as kill, argv } from 'process';
+
 export function flatten(array = []) {
   let res = [];
   array.map((item) => {
@@ -12,6 +14,23 @@ export function flatten(array = []) {
 
 export function exit(n) {
   console.log('程序结束');
-  process.exit(n);
+  kill(n);
 };
+
+/**
+ * 脚本执行参数转对象，要求`foo=bar`格式
+ * @param {Array | process.argv} arr 
+ * @returns 
+ */
+export function queryScriptParams(arr = argv) {
+  let argArr = arr.filter(item => /(.*)=(.*)/.test(item))
+  if (!argArr.length) return {}
+  let obj = {}
+  argArr.forEach(element => {
+    let arr = element.match(/(.*)=(.*)/)
+    obj[arr[1]] = arr[2]
+  });
+  return obj
+};
+
 
