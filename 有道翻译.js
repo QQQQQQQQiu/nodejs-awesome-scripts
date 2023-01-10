@@ -3,7 +3,7 @@ import CryptoJS from "crypto-js";
 import {stringify} from 'qs'
 import crypto from 'crypto'
 import {request} from './utils/request.js'
-import {flatten} from './utils/工具.js'
+import {flatten} from './utils/methods.js'
 import {question} from './utils/询问输入.js'
 
 async function translate(words = '') {

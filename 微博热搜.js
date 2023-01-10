@@ -1,7 +1,7 @@
 import {request} from './utils/request.js'
 import {isHasFile, readFileByObj, writeFileObj, writeFileOther, writeFileStr} from './utils/文件操作.js'
 import {select} from './utils/询问输入.js'
-import {exit} from './utils/工具.js'
+import {exit} from './utils/methods.js'
 import {parseAsync, transforms} from 'json2csv'
 
 
