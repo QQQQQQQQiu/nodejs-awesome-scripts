@@ -3,9 +3,42 @@ import {load} from 'cheerio'
 import {writeFileOther} from './utils/文件操作.js'
 import {parse} from 'qs'
 import {request} from './utils/request.js'
+import {isHasFile} from './utils/文件操作.js'
+
+/**
+ * 方法一
+ * 用爬取html的方法截取字符
+ */
+async function loadWallpaperApi() {
+    let resObj = JSON.parse(await request('GET', `https://cn.bing.com/hp/api/model`))
+    let imgDataArr = resObj?.MediaContents.map(({ImageContent: {Image: {Url}}})=> {
+        return {
+            url: /^https/.test(Url) ? Url : `https://cn.bing.com/${Url}`,
+            name: parse(Url.split('?')[1]).id
+        }
+    })
+    for (let index = 0; index < imgDataArr.length; index++) {
+        const element = imgDataArr[index];
+        let filePath = `./temp/${element.name}`
+        if (await isHasFile(filePath)) {
+            console.log(`已存在：=>${filePath}`);
+            continue
+        }
+        let img = await request('GET', element.url, undefined, {
+            resType: 'Buffer'
+        })
+        await writeFileOther(filePath, img, "binary")
+        console.log(`存放在： ${filePath}`);
+    }
+}
+loadWallpaperApi()
 
 
-async function init() {
+/**
+ * 方法二
+ * 用爬取html的方法截取字符
+ */
+async function parseHTML() {
     let str = await request('GET', `https://cn.bing.com`)
     console.log('str length:', str?.length)
     let $ = load(str);
@@ -25,5 +58,3 @@ async function init() {
     await writeFileOther(`./temp/${name}`, img, "binary")
     console.log(`存放在 ./temp/${name}`);
 }
-
-init()
