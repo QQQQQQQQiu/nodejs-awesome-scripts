@@ -8,7 +8,8 @@ import {queryScriptParams} from './utils/methods.js'
 const Mode = queryScriptRunAtMode()
 const TimeRange = queryScriptParams()['time'] || 1000*60*30 // 轮询模式下间隔30分
 
-const JsonFilePath = './temp/hotSearch.json'
+const fileName = () => `hotSearch_${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}`
+let JsonFilePath = `./temp/${fileName()}.json`
 
 /**
  * 当前脚本支持以下模式运行
@@ -27,8 +28,11 @@ const ScriptRunAt = {
     exit()
   },
   async LoopQuery() {
-    let hotArr = await loadHotArr()
-    await saveJsonFile(hotArr)
+    JsonFilePath = `./temp/${fileName()}.json`
+    let hotArr = await loadHotArr().catch(err => {
+      console.log(`ERR：loadHotArr =>`, err);
+    })
+    hotArr && await saveJsonFile(hotArr)
     setTimeout(async () => {
       ScriptRunAt.LoopQuery()
     }, TimeRange);
@@ -88,8 +92,8 @@ async function saveCsvFile(fileInnerData = []) {
     fields:csvFields,
     transforms:csvPaths
   });
-  await writeFileStr(`./temp/hotSearch.csv`, csvInnerStr)
-  console.log(`csv文件保存完成，文件：./temp/hotSearch.csv`);
+  await writeFileStr(`./temp/${fileName()}.csv`, csvInnerStr)
+  console.log(`csv文件保存完成，文件：./temp/${fileName()}.csv`);
 }
 
 /**
