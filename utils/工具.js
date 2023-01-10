@@ -9,3 +9,9 @@ export function flatten(array = []) {
   });
   return res;
 };
+
+export function exit(n) {
+  console.log('程序结束');
+  process.exit(n);
+};
+
