@@ -4,3 +4,5 @@
 使用Nodejs代替Python爬虫功能
 
 封装了许多原生api
+
+运行环境要求：node >= 18
