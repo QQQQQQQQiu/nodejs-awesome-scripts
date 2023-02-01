@@ -1,13 +1,14 @@
 import {request} from './utils/request.js'
 import CryptoJS from "crypto-js";
+import {question} from './utils/询问输入.js'
 
 async function getm3u8(pageUrl) {
   let text = await request('GET', pageUrl)
   let pid = text.match(/var guid = "(.*?)"/)?.[1]
   if (!pid) {
-    console.log('1 :', 1)
     pid = text.match(/var guid_Ad_VideoCode = "(.*?)"/)?.[1]
   }
+  console.log('pid :', pid)
   let ts = +new Date()
   let fp = getFP()
   let enstr = ts + '2049' + '47899B86370B879139C08EA3B5E88267' + fp
@@ -20,10 +21,14 @@ async function getm3u8(pageUrl) {
   res.video.chapters4.forEach(({url}, index) => {
     console.log(`${index + 1}=>${url}`)
   });
-  debugger
 }
 
-getm3u8('https://tv.cctv.com/2022/11/21/VIDE0LGv20wQg61xGQk1rhne221121.shtml?spm=C31267.Ps4TvsHCiPx5.EFhA5EKLlcYD.33')
+async function main() {
+    // let linkStr = 'https://tv.cctv.com/2022/11/21/VIDE0LGv20wQg61xGQk1rhne221121.shtml?spm=C31267.Ps4TvsHCiPx5.EFhA5EKLlcYD.33'
+    let linkStr = await question('目标页面链接：')
+    getm3u8(linkStr)
+}
+main()
 
 
 
