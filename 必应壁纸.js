@@ -24,7 +24,7 @@ async function loadWallpaperApi() {
             console.log(`已存在：=>${filePath}`);
             continue
         }
-        let img = await request('GET', element.url, undefined, {
+        let img = await request('GET', element.url, {
             resType: 'Buffer'
         })
         await writeFileOther(filePath, img, "binary")
@@ -52,7 +52,7 @@ async function parseHTML() {
     }
     console.log('图片链接 :', imgSrc)
     let name = parse(imgSrc.split('?')[1]).id
-    let img = await request('GET', imgSrc, undefined, {
+    let img = await request('GET', imgSrc, {
         resType: 'Buffer'
     })
     await writeFileOther(`./temp/${name}`, img, "binary")

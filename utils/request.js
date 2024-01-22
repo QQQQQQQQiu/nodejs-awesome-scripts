@@ -3,9 +3,11 @@ import https from 'node:https'
 import { Buffer } from 'node:buffer';
 
 
-export async function request(method = 'GET', url = '', params, options = {}) {
+export async function request(method = 'GET', url = '', options = {}) {
   const xhr = /^https/.test(url) ? https: http
   const {
+    contentType = '',
+    data = '',
     headers = {},
     onData = undefined,
     onRes = undefined,
@@ -15,6 +17,20 @@ export async function request(method = 'GET', url = '', params, options = {}) {
   const requestOptions = {
     method,
     headers
+  }
+  let params = data
+  if (contentType === 'json') {
+    params = JSON.stringify(data)
+  }
+  else if (contentType === 'formData') {
+    const formData = new FormData()
+    for (const [key, value] of Object.entries(data)) {
+      formData.append(key, value)
+    }
+    params = formData
+  }
+  else if (contentType === 'url') {
+    params = (new URLSearchParams(data)).toString()
   }
   return new Promise((resolve, reject) => {
     const req = xhr.request(url, requestOptions, async (res) => {

@@ -8,7 +8,7 @@ import {question} from './utils/询问输入.js'
 
 async function translate(words = '') {
   let cookie = ''
-  await request('GET', 'http://fanyi.youdao.com/', '' , {
+  await request('GET', 'http://fanyi.youdao.com/', {
     headers: {
       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36',
     },
@@ -41,7 +41,9 @@ async function translate(words = '') {
     'mysticTime': ts,
     'keyfrom': 'fanyi.web',
   }
-  let data = await request('POST', api, stringify(postdata), {
+  let data = await request('POST', api, {
+    contentType: 'url',
+    data: postdata,
     headers
   })
   let resStr = flatten(JSON.parse(decrypt(data))?.translateResult).map(({tgt})=> tgt).toString()
