@@ -18,7 +18,7 @@ export async function request(method = 'GET', url = '', options = {}) {
     method,
     headers
   }
-  let params = data
+  let params = ''
   if (contentType === 'json') {
     params = JSON.stringify(data)
   }
@@ -30,7 +30,7 @@ export async function request(method = 'GET', url = '', options = {}) {
     params = formData
   }
   else if (contentType === 'url') {
-    params = (new URLSearchParams(data)).toString()
+    url = `${url}?${(new URLSearchParams(data)).toString()}`
   }
   return new Promise((resolve, reject) => {
     const req = xhr.request(url, requestOptions, async (res) => {
@@ -51,10 +51,10 @@ export async function request(method = 'GET', url = '', options = {}) {
       });
     });
     req.on('error', (e) => {
-      console.error(`problem with request: ${e.message}`);
+      console.error(`!!!!!!!!!!!!!problem with request: ${e.message}`);
       reject(e)
     });
-    // Write data to request body
+    console.log('url :>> ', url, '\n params :>>',params);
     params && req.write(params)
     req.end()
   })
