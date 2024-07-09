@@ -21,6 +21,7 @@ export async function request(method = 'GET', url = '', options = {}) {
   let params = ''
   if (contentType === 'json') {
     params = JSON.stringify(data)
+    headers['content-type'] = 'application/json'
   }
   else if (contentType === 'formData') {
     const formData = new FormData()
@@ -28,9 +29,11 @@ export async function request(method = 'GET', url = '', options = {}) {
       formData.append(key, value)
     }
     params = formData
+    headers['content-type'] = 'application/x-www-form-urlencoded'
   }
   else if (contentType === 'url') {
     url = `${url}?${(new URLSearchParams(data)).toString()}`
+    headers['content-type'] = 'application/x-www-form-urlencoded'
   }
   return new Promise((resolve, reject) => {
     const req = xhr.request(url, requestOptions, async (res) => {
@@ -54,7 +57,8 @@ export async function request(method = 'GET', url = '', options = {}) {
       console.error(`!!!!!!!!!!!!!problem with request: ${e.message}`);
       reject(e)
     });
-    console.log('url :>> ', url, '\n params :>>',params);
+    console.log('url :>> ', url);
+    console.log('params :>> ', params);
     params && req.write(params)
     req.end()
   })
