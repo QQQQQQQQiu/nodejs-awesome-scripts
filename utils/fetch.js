@@ -13,20 +13,19 @@ export async function myFetch (url, options = {}) {
   const {
     method = 'GET',
     contentType = 'json', // json, form
-    responseType = 'json', // json, text, stream, original
+    responseType = 'text', // json, text, stream, original
     streamOptions = {
       type: 'text', // text, original
       onProgress: () => {},
     },
     headers = {},
     data = {},
-    
   } = options
   let reqBody = data
   let reqUrl = url
   switch (method) {
     case 'GET':
-      if (contentType === 'json') {
+      if (new URLSearchParams(data).toString()) {
         reqUrl += '?' + new URLSearchParams(data).toString()
       }
       reqBody = null
@@ -34,16 +33,17 @@ export async function myFetch (url, options = {}) {
     case 'POST':
       if (contentType === 'json') {
         reqBody = JSON.stringify(data)
-        headers['Content-Type'] = 'application/json'
+        // headers['content-type'] = 'application/json'
       } else if (contentType === 'form') {
         reqBody = new URLSearchParams(data).toString()
-        headers['Content-Type'] = 'application/x-www-form-urlencoded'
+        // headers['content-type'] = 'application/x-www-form-urlencoded'
       } else if (contentType === 'text') {
         reqBody = data
-        headers['Content-Type'] = 'text/plain'
+        // headers['content-type'] = 'text/plain'
       }
       break
   }
+  // console.log('reqUrl :>> ', reqUrl);
   const res = await fetch(reqUrl, {
     method,
     headers,
@@ -54,6 +54,8 @@ export async function myFetch (url, options = {}) {
       return await res.json()
     case 'text':
       return await res.text()
+    case 'blob':
+      return await res.blob()
     case 'stream':
       let data = await readStream(res, streamOptions.type)
       for await (const chunk of data) {

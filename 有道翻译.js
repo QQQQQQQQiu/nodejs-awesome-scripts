@@ -46,6 +46,7 @@ async function translate(words = '') {
     data: postdata,
     headers
   })
+  console.log('data :>> ', data);
   let resStr = flatten(JSON.parse(decrypt(data))?.translateResult).map(({tgt})=> tgt).toString()
   console.log(`翻译：\n ${words}\n ${resStr}`);
 }
