@@ -1,22 +1,29 @@
+import { myFetch } from './utils/fetch.js'
 
-import CryptoJS from "crypto-js";
-import {stringify} from 'qs'
-import crypto from 'crypto'
-import {request} from './utils/request.js'
-import {flatten} from './utils/methods.js'
-import {question} from './utils/询问输入.js'
-
-(async () =>{
-  let res = await request('POST', 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=0545cd9d-8d0f-4146-a2c2-82c8544a851e', {
-    contentType: 'json',
-    data: {
+export async function send_msg(type = 'text', content = '') {
+  const obj = {
+    text: {
       "msgtype": "text",
       "text": {
-        "content": "广州\n今日天气：29度，大部分多云，降雨概率：60%",
+        "content": content,
         "mentioned_list":[],
         "mentioned_mobile_list":[]
       }
+    },
+    markdown: {
+      "msgtype": "markdown",
+      "markdown": {
+        "content": content
+      }
     }
-  })
-  console.log('res :>> ', res);
-})()
+  }
+  await myFetch("https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=0545cd9d-8d0f-4146-a2c2-82c8544a851e", {
+    responseType: 'text',
+    method: "POST",
+    contentType: 'json',
+    headers: {
+      'accept': '*/*',
+    },
+    data: obj[type]
+  });
+}
