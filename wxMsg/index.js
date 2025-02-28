@@ -1,9 +1,4 @@
 
-import CryptoJS from "crypto-js";
-import qs from 'qs'
-import crypto from 'crypto'
-import { request } from '../utils/request.js'
-import { flatten } from '../utils/methods.js'
 import wxDecrypt from './wxDecrypt.js';
 
 
@@ -34,7 +29,7 @@ let {
 } = parseMessage(decrypted.message);
 
 
-async function sendData() {
+export async function send_msg(content = 'Hello, World!') {
   const corpid = config.Corpid;
   const corpsecret = config.Secret
   
@@ -56,7 +51,7 @@ async function sendData() {
     msgtype: 'text',
     agentid: config.agentID, // 企业微信的应用Agent ID
     text: {
-      content: 'Hello, World!' // 消息内容
+      content // 消息内容
     },
     safe: 0 // 是否加密，0 表示不加密
   };
@@ -71,7 +66,6 @@ async function sendData() {
   msgRes = await msgRes.text()
   console.log('msgRes :>> ', msgRes);
 }
-sendData()
 
 
 
