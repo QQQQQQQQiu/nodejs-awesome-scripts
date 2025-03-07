@@ -11,13 +11,13 @@ const WATCH_ARR = [
     userName: '天津股侠'
   },
 ]
+const UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
 
 async function start(options = {}) {
   const {
     uid = '',
     userName = ''
   } = options
-  const UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
   
   let res_home_page = await myFetch("https://m.weibo.cn/api/container/getIndex", {
     responseType: 'json',
@@ -31,7 +31,7 @@ async function start(options = {}) {
       value: uid
     },
   });
-  const containerid = res_home_page.data.tabsInfo.tabs.find(tab => tab.tabKey === 'weibo').containerid
+  let containerid = res_home_page.data.tabsInfo.tabs.find(tab => tab.tabKey === 'weibo').containerid
   res_home_page = null
   // console.log('done config:>> ', containerid)
   let res_weibo_data = await myFetch("https://m.weibo.cn/api/container/getIndex", {
@@ -58,6 +58,7 @@ async function start(options = {}) {
       break
     }
   }
+  containerid = null
   msgArr = null
   res_weibo_data = null
 
@@ -123,7 +124,7 @@ async function main() {
   while (true) {
     for (let index = 0; index < WATCH_ARR.length; index++) {
       const element = WATCH_ARR[index];
-      await start(element).catch(err => {
+      await start({...element}).catch(err => {
         ERR_COUNT += 1
         console.error(`ERR [No.${ERR_COUNT}] [${new Date().toLocaleString()}] :>> `, err);
         if (ERR_COUNT > 2) {
