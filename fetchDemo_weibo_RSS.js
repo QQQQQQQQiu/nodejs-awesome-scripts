@@ -14,7 +14,6 @@ const WATCH_ARR = [
 const UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
 
 async function start(options = {}) {
-  await delay(WAIT_TIME)
   const {
     uid = '',
     userName = ''
@@ -35,7 +34,7 @@ async function start(options = {}) {
   let containerid = res_home_page.data.tabsInfo.tabs.find(tab => tab.tabKey === 'weibo').containerid
   res_home_page = null
   // console.log('done config:>> ', containerid)
-  let res_weibo_data = await myFetch("https://m.weibo.cn/api/container/getIndex", {
+  let {data:{cards}} = await myFetch("https://m.weibo.cn/api/container/getIndex", {
     responseType: 'json',
     method: "GET",
     headers: {
@@ -49,10 +48,10 @@ async function start(options = {}) {
       containerid
     },
   });
-  let msgArr = res_weibo_data.data.cards
+  
   let bid = ''
-  for (let index = 0; index < msgArr.length; index++) {
-    const element = msgArr[index];
+  for (let index = 0; index < cards.length; index++) {
+    const element = cards[index];
     if (element.profile_type_id !== 'proweibotop_') {
       bid = element.mblog.bid
       // bid = 'PgSfilMWd'
@@ -60,8 +59,7 @@ async function start(options = {}) {
     }
   }
   containerid = null
-  msgArr = null
-  res_weibo_data = null
+  cards = null
 
   if (CURRENT_MSG_ID === bid) return
   CURRENT_MSG_ID = bid
@@ -134,7 +132,7 @@ async function main() {
         }
       })
     }
-    
+    await delay(WAIT_TIME)
   }
 }
 
