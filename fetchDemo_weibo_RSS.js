@@ -36,6 +36,10 @@ async function start(options = {}) {
     },
   });
   let containerid = res_home_page.data.tabsInfo.tabs.find(tab => tab.tabKey === 'weibo').containerid
+
+  WAIT_TIME = 5 * 1000
+  ERR_COUNT = 0
+
   res_home_page = null
   // console.log('done config:>> ', containerid)
   let {data:{cards}} = await myFetch("https://m.weibo.cn/api/container/getIndex", {
@@ -118,9 +122,6 @@ async function start(options = {}) {
   msg += `\n\n📎 https://m.weibo.cn/status/${bid}`
   
   await send_msg('text', msg)
-
-  WAIT_TIME = 5 * 1000
-  ERR_COUNT = 0
 }
 
 async function main() {
