@@ -130,8 +130,8 @@ async function main() {
       const element = WATCH_ARR[index];
       await start({...element}).catch(err => {
         ERR_COUNT += 1
-        console.error(`ERR [No.${ERR_COUNT}] [${new Date().toLocaleString()}] :>> `, err);
-        console.error(`ERR [No.${ERR_COUNT}] [${new Date().toLocaleString()}] :>> CURRENT_MSG_ID `, CURRENT_MSG_ID);
+        // console.error(`ERR [No.${ERR_COUNT}] [${new Date().toLocaleString()}] :>> `, err);
+        // console.error(`ERR [No.${ERR_COUNT}] [${new Date().toLocaleString()}] :>> CURRENT_MSG_ID `, CURRENT_MSG_ID);
         if (ERR_COUNT > 2) {
           WAIT_TIME = 10 * 60 * 1000
           ERR_COUNT = 0
