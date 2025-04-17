@@ -10,6 +10,10 @@ const WATCH_ARR = [
     uid: '1896820725',
     userName: '天津股侠'
   },
+  {
+    uid: '7360562686',
+    userName: '新侠客行'
+  },
 ]
 const UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1'
 
@@ -126,6 +130,7 @@ async function main() {
       await start({...element}).catch(err => {
         ERR_COUNT += 1
         console.error(`ERR [No.${ERR_COUNT}] [${new Date().toLocaleString()}] :>> `, err);
+        console.error(`ERR [No.${ERR_COUNT}] [${new Date().toLocaleString()}] :>> CURRENT_MSG_ID `, CURRENT_MSG_ID);
         if (ERR_COUNT > 2) {
           WAIT_TIME = 10 * 60 * 1000
           ERR_COUNT = 0
