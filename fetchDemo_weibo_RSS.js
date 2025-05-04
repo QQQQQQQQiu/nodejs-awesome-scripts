@@ -146,7 +146,6 @@ async function main() {
         }
       }).then(()=>{
         uidObj.err_count = 0
-        console.log('1 :>> ', 1);
       })
     }
     await delay(WAIT_TIME)
