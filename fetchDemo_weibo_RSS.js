@@ -5,12 +5,12 @@ import {delay} from './utils/methods.js';
 let WAIT_TIME = 5 * 1000
 const WATCH_ARR = [
   {
-    containerid: '1005051896820725',
+    containerid: '1076031896820725',
     uid: '1896820725',
     userName: '天津股侠'
   },
   {
-    containerid: '1005057360562686',
+    containerid: '1076037360562686',
     uid: '7360562686',
     userName: '新侠客行'
   },
