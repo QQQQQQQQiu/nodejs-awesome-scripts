@@ -5,10 +5,12 @@ import {delay} from './utils/methods.js';
 let WAIT_TIME = 5 * 1000
 const WATCH_ARR = [
   {
+    containerid: '1005051896820725',
     uid: '1896820725',
     userName: '天津股侠'
   },
   {
+    containerid: '1005051896820725',
     uid: '7360562686',
     userName: '新侠客行'
   },
@@ -29,7 +31,8 @@ function getRuningData(uid = '') {
 async function start(options = {}) {
   const {
     uid = '',
-    userName = ''
+    userName = '',
+    containerid = '',
   } = options
   
   let res_home_page = await myFetch("https://m.weibo.cn/api/container/getIndex", {
@@ -40,8 +43,7 @@ async function start(options = {}) {
       'user-agent': UA
     },
     data: {
-      type: 'uid',
-      value: uid
+      containerid
     },
   });
   try {
