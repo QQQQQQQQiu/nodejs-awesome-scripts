@@ -40,8 +40,7 @@ async function start(options = {}) {
     method: "GET",
     headers: {
       'accept': '*/*',
-      'referer': 'https://m.weibo.cn/',
-      'user-agent': UA
+      'User-Agent': UA
     },
     data: {
       type: 'uid',
@@ -70,7 +69,7 @@ async function start(options = {}) {
     headers: {
       'accept': '*/*',
       'referer': 'https://m.weibo.cn/',
-      'user-agent': UA
+      'User-Agent': UA
     },
     data: {
       id: bid
