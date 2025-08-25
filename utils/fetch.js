@@ -43,7 +43,7 @@ export async function myFetch (url, options = {}) {
       }
       break
   }
-  // console.log('reqUrl :>> ', reqUrl);
+  console.log('reqUrl :>> ', reqUrl);
   const res = await fetch(reqUrl, {
     method,
     headers,
@@ -51,7 +51,9 @@ export async function myFetch (url, options = {}) {
   })
   switch (responseType) {
     case 'json':
-      return await res.json()
+      let text = await res.text()
+      console.log('res text', text)
+      return JSON.parse(text)
     case 'text':
       return await res.text()
     case 'blob':
