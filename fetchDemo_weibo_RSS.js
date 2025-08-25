@@ -33,7 +33,7 @@ async function start(options = {}) {
   } = options
   
   let res_home_page = await myFetch("https://m.weibo.cn/api/container/getIndex", {
-    responseType: 'json',
+    responseType: 'text',
     method: "GET",
     headers: {
       'accept': '*/*',
@@ -44,6 +44,12 @@ async function start(options = {}) {
       value: uid
     },
   });
+  try {
+    res_home_page = JSON.parse(res_home_page)
+  }catch (err){
+    console.error('json err:', res_home_page)
+  }
+  if (!res_home_page) return
   let containerid = res_home_page.data.tabsInfo.tabs.find(tab => tab.tabKey === 'weibo').containerid
 
   // console.log('done config:>> ', containerid)
@@ -140,7 +146,7 @@ async function main() {
       await start(element).catch(err => {
         uidObj.err_count += 1
         console.error(`ERR [${new Date().toLocaleString()}] [${element.userName}-err.${uidObj.err_count}] :>> `, err);
-        // console.error(`ERR [No.${ERR_COUNT}] [${new Date().toLocaleString()}] :>> CURRENT_MSG_ID `, CURRENT_MSG_ID);
+        
         if (uidObj.err_count > 2) {
           uidObj.freeze_wait_count = 12 * 10
         }
