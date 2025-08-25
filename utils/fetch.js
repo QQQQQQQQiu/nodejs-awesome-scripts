@@ -1,4 +1,5 @@
 const decoder = new TextDecoder('utf-8')
+const debug = false
 /* 
   * @param {string} url
   * @param {object} options
@@ -43,17 +44,17 @@ export async function myFetch (url, options = {}) {
       }
       break
   }
-  console.log('reqUrl :>> ', reqUrl);
+  debug && console.log('reqUrl :>> ', reqUrl);
   const res = await fetch(reqUrl, {
     method,
     headers,
     body: reqBody,
   })
-  console.log('response.status', res.status)
+  debug && console.log('response.status', res.status)
   switch (responseType) {
     case 'json':
       let text = await res.text()
-      console.log('res text: ', text)
+      debug && console.log('res text: ', text)
       return JSON.parse(text)
     case 'text':
       return await res.text()
