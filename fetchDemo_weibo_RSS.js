@@ -10,7 +10,7 @@ const WATCH_ARR = [
     userName: '天津股侠'
   },
   {
-    containerid: '1005051896820725',
+    containerid: '1005057360562686',
     uid: '7360562686',
     userName: '新侠客行'
   },
@@ -35,26 +35,6 @@ async function start(options = {}) {
     containerid = '',
   } = options
   
-  let res_home_page = await myFetch("https://m.weibo.cn/api/container/getIndex", {
-    responseType: 'text',
-    method: "GET",
-    headers: {
-      'accept': '*/*',
-      'user-agent': UA
-    },
-    data: {
-      containerid
-    },
-  });
-  try {
-    res_home_page = JSON.parse(res_home_page)
-  }catch (err){
-    console.error('json err:', res_home_page)
-  }
-  if (!res_home_page) return
-  let containerid = res_home_page.data.tabsInfo.tabs.find(tab => tab.tabKey === 'weibo').containerid
-
-  // console.log('done config:>> ', containerid)
   let {data:{cards}} = await myFetch("https://m.weibo.cn/api/container/getIndex", {
     responseType: 'json',
     method: "GET",
