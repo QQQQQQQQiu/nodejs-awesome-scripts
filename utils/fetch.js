@@ -49,10 +49,11 @@ export async function myFetch (url, options = {}) {
     headers,
     body: reqBody,
   })
+  console.log('response.status', res.status)
   switch (responseType) {
     case 'json':
       let text = await res.text()
-      console.log('res text', text)
+      console.log('res text: ', text)
       return JSON.parse(text)
     case 'text':
       return await res.text()
