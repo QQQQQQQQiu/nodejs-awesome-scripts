@@ -35,7 +35,7 @@ async function start(options = {}) {
     containerid = '',
   } = options
   
-  let {data:{cards}} = await myFetch("https://m.weibo.cn/api/container/getIndex", {
+  let {data:{cards}} = await myFetch("https://p.000178.xyz/https://m.weibo.cn/api/container/getIndex", {
     responseType: 'json',
     method: "GET",
     headers: {
@@ -43,8 +43,6 @@ async function start(options = {}) {
       'User-Agent': UA
     },
     data: {
-      type: 'uid',
-      value: uid,
       containerid
     },
   });
