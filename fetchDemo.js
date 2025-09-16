@@ -1,38 +1,55 @@
 import { myFetch } from './utils/fetch.js'
 
+
+function extractCookieFields(cookieString, fields) {
+    const cookies = cookieString.split(',').map(cookie => cookie.trim());
+    const result = {};
+    fields.forEach(field => {
+        const regex = new RegExp(`${field}=([^;]+)`);
+        cookies.forEach(cookie => {
+            const match = cookie.match(regex);
+            if (match) {
+                result[field] = match[1];
+            }
+        });
+    });
+    return result;
+}
+
 async function main() {
 
-  const res = await myFetch("http://127.0.0.1:8081/", {
-    responseType: 'text',
-    contentType: 'json',
+  const res = await myFetch("https://visitor.passport.weibo.cn/visitor/genvisitor2", {
+    responseType: 'original',
+    contentType: 'form',
     method: "POST",
     headers: {
-      'accept': 'text/event-stream',
-      'accept-encoding': 'gzip, deflate, br',
-      'accept-language': 'zh,zh-CN;q=0.9,en;q=0.8,zh-TW;q=0.7',
-      'content-type': 'application/json',
-      'cookie': 'dcm=8; dcs=1',
-      'origin': 'https://duckduckgo.com',
-      'referer': 'https://duckduckgo.com/',
-      'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="100"',
-      'sec-ch-ua-mobile': '?0',
-      'sec-ch-ua-platform': '"macOS"',
-      'sec-fetch-dest': 'empty',
-      'sec-fetch-mode': 'cors',
-      'sec-fetch-site': 'same-origin',
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
     data: {
-      model: 'o3-mini',
-      messages: [ { role: 'user', content: '你好，你是哪位？' } ]
+      'cb': `visitor_gray_callback`,
     },
-    streamOptions: {
-      type: 'text',
-      onProgress(message) {
-        console.log('message :>> ', message);
-      }
-    }
   });
-  console.log('done :>> ', res)
+  // console.log('done :>> ', res)
+
+  // console.log('headers :>> ', res.headers);
+  console.log('cookie :>> ', res.headers.get('set-cookie'));
+  // document.cookie = res.headers.get('set-cookie')
+  // console.log('document.cookie :>> ', document.cookie);
+
+  let str = extractCookieFields(res.headers.get('set-cookie'), ['SUB', 'SUBP'])
+  console.log('str :>> ', str);
+
+ let resp =  await myFetch("https://p.000178.xyz/https://m.weibo.cn/api/container/getIndex", {
+      responseType: 'json',
+      method: "GET",
+      headers: {
+        'p-Cookie': `SUB=${str.SUB}; SUBP=${str.SUBP};`,
+      },
+      data: {
+        containerid: '1076031896820725'
+      },
+    });
+    console.log('res :>> ', resp);
 }
 
 

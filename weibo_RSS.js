@@ -1,8 +1,10 @@
 import { myFetch } from './utils/fetch.js'
 import {send_msg} from './wechatWebHook.js';
-import {delay} from './utils/methods.js';
+import {delay, extractCookieFields} from './utils/methods.js';
 
+let REQ_COOKIE = ''
 let WAIT_TIME = 5 * 1000
+
 const WATCH_ARR = [
   {
     containerid: '1076031896820725',
@@ -15,7 +17,8 @@ const WATCH_ARR = [
     userName: '新侠客行'
   },
 ]
-const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36'
+
+const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
 
 const Cache = {}
 function getRuningData(uid = '') {
@@ -35,11 +38,12 @@ async function start(options = {}) {
     containerid = '',
   } = options
   
-  let {data:{cards}} = await myFetch("https://p.000178.xyz/https://m.weibo.cn/api/container/getIndex", {
+  let {data:{cards}} = await myFetch("https://m.weibo.cn/api/container/getIndex", {
     responseType: 'json',
     method: "GET",
     headers: {
       'accept': '*/*',
+      'Cookie': REQ_COOKIE,
       'User-Agent': UA
     },
     data: {
@@ -67,6 +71,7 @@ async function start(options = {}) {
     headers: {
       'accept': '*/*',
       'referer': 'https://m.weibo.cn/',
+      'Cookie': REQ_COOKIE,
       'User-Agent': UA
     },
     data: {
@@ -114,27 +119,58 @@ async function start(options = {}) {
 }
 
 async function main() {
+  REQ_COOKIE = await fetchCookie()
   while (true) {
     for (let index = 0; index < WATCH_ARR.length; index++) {
       const element = WATCH_ARR[index];
       const uidObj = getRuningData(element.uid)
       if (uidObj.freeze_wait_count > 0) {
+        console.log('阈值 -1 :>> ', element.userName, uidObj.freeze_wait_count);
         uidObj.freeze_wait_count -= 1
         continue
       }
-      await start(element).catch(err => {
+      await start(element).catch(async err => {
         uidObj.err_count += 1
-        console.error(`ERR [${new Date().toLocaleString()}] [${element.userName}-err.${uidObj.err_count}] :>> `, err);
+        console.error(`ERR [${new Date().toLocaleString()}] [${element.userName}-err.${uidObj.err_count}] :>> `, uidObj.err_count);
         
-        if (uidObj.err_count > 2) {
-          uidObj.freeze_wait_count = 12 * 10
+        if (uidObj.err_count == 2) {
+          console.log('错误达到2，尝试获取cookie');
+          REQ_COOKIE = await fetchCookie()
         }
-      }).then(()=>{
-        uidObj.err_count = 0
+        if (uidObj.err_count > 2) {
+          console.log('错误达到阈值 :>> ', element.userName);
+          uidObj.freeze_wait_count = 12 * 5
+          uidObj.err_count = 0
+        }
+        return 'FAIL'
+      }).then((res)=>{
+        if (res === 'FAIL') return
+        if (uidObj.err_count > 0) {
+          console.log('成功，错误计数归零');
+          uidObj.err_count = 0
+        }
       })
     }
     await delay(WAIT_TIME)
   }
+}
+
+
+async function fetchCookie() {
+  const res = await myFetch("https://visitor.passport.weibo.cn/visitor/genvisitor2", {
+    responseType: 'original',
+    contentType: 'form',
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    data: {
+      'cb': `visitor_gray_callback`,
+    },
+  });
+  console.log('cookie :>> ', res.headers.get('set-cookie'));
+  const obj = extractCookieFields(res.headers.get('set-cookie'), ['SUB', 'SUBP'])
+  return `SUB=${obj.SUB}; SUBP=${obj.SUBP};`
 }
 
 console.log(`starting... ${ new Date().toLocaleString() }`);

@@ -39,3 +39,26 @@ export function delay(ms = 0) {
     setTimeout(resolve, ms);
   });
 }
+
+/**
+ * 从cookie字符串中提取指定字段
+ * @param {string} cookieString 
+ * @param {Array} fields 
+ * @return {Object}
+ * @example
+ * extractCookieFields('a=1; b=2; c=3', ['a', 'c']) // {a: '1', c: '3'}
+ */
+export function extractCookieFields(cookieString, fields) {
+    const cookies = cookieString.split(',').map(cookie => cookie.trim());
+    const result = {};
+    fields.forEach(field => {
+        const regex = new RegExp(`${field}=([^;]+)`);
+        cookies.forEach(cookie => {
+            const match = cookie.match(regex);
+            if (match) {
+                result[field] = match[1];
+            }
+        });
+    });
+    return result;
+}
