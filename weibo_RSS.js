@@ -38,13 +38,13 @@ async function start(options = {}) {
     containerid = '',
   } = options
   
-  let {data:{cards}} = await myFetch("https://m.weibo.cn/api/container/getIndex", {
+  let {data:{cards}} = await myFetch("https://p.000178.xyz/https://m.weibo.cn/api/container/getIndex", {
     responseType: 'json',
     method: "GET",
     headers: {
-      'accept': '*/*',
-      'Cookie': REQ_COOKIE,
-      'User-Agent': UA
+      // 'accept': '*/*',
+      'p-Cookie': REQ_COOKIE,
+      // 'User-Agent': UA
     },
     data: {
       containerid
@@ -131,7 +131,7 @@ async function main() {
       }
       await start(element).catch(async err => {
         uidObj.err_count += 1
-        console.error(`ERR [${new Date().toLocaleString()}] [${element.userName}-err.${uidObj.err_count}] :>> `, uidObj.err_count);
+        console.error(`ERR [${new Date().toLocaleString()}] [${element.userName}-err.${uidObj.err_count}] :>> `, err);
         
         if (uidObj.err_count == 2) {
           console.log('错误达到2，尝试获取cookie');
@@ -170,7 +170,8 @@ async function fetchCookie() {
   });
   console.log('cookie :>> ', res.headers.get('set-cookie'));
   const obj = extractCookieFields(res.headers.get('set-cookie'), ['SUB', 'SUBP'])
-  return `SUB=${obj.SUB}; SUBP=${obj.SUBP};`
+  // return `SUB=${obj.SUB}; SUBP=${obj.SUBP};`
+  return `SUB=x; SUBP=y;`
 }
 
 console.log(`starting... ${ new Date().toLocaleString() }`);
