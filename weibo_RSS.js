@@ -125,7 +125,7 @@ async function main() {
       const element = WATCH_ARR[index];
       const uidObj = getRuningData(element.uid)
       if (uidObj.freeze_wait_count > 0) {
-        console.log('阈值 -1 :>> ', element.userName, uidObj.freeze_wait_count);
+        if (uidObj.freeze_wait_count % 10 === 0) console.log(element.userName, '阈值 -1 :>> ', element.userName, uidObj.freeze_wait_count);
         uidObj.freeze_wait_count -= 1
         continue
       }
@@ -135,7 +135,8 @@ async function main() {
         
         if (uidObj.err_count == 2) {
           console.log('错误达到2，尝试获取cookie');
-          REQ_COOKIE = await fetchCookie()
+          REQ_COOKIE = `SUB=x; SUBP=y;`
+          // REQ_COOKIE = await fetchCookie()
         }
         if (uidObj.err_count > 2) {
           console.log('错误达到阈值 :>> ', element.userName);
@@ -170,8 +171,7 @@ async function fetchCookie() {
   });
   console.log('cookie :>> ', res.headers.get('set-cookie'));
   const obj = extractCookieFields(res.headers.get('set-cookie'), ['SUB', 'SUBP'])
-  // return `SUB=${obj.SUB}; SUBP=${obj.SUBP};`
-  return `SUB=x; SUBP=y;`
+  return `SUB=${obj.SUB}; SUBP=${obj.SUBP};`
 }
 
 console.log(`starting... ${ new Date().toLocaleString() }`);
