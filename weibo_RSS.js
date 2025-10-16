@@ -125,7 +125,7 @@ async function main() {
       const element = WATCH_ARR[index];
       const uidObj = getRuningData(element.uid)
       if (uidObj.freeze_wait_count > 0) {
-        if (uidObj.freeze_wait_count % 10 === 0) console.log(element.userName, '阈值 -1 :>> ', element.userName, uidObj.freeze_wait_count);
+        if (uidObj.freeze_wait_count % 10 === 0) console.log(new Date().toLocaleString(), ' ', element.userName, '阈值 -1 :>> ', element.userName, uidObj.freeze_wait_count);
         uidObj.freeze_wait_count -= 1
         continue
       }
@@ -139,7 +139,7 @@ async function main() {
           // REQ_COOKIE = await fetchCookie()
         }
         if (uidObj.err_count > 2) {
-          console.log('错误达到阈值 :>> ', element.userName);
+          console.log(new Date().toLocaleString(),' 错误达到阈值 :>> ', element.userName);
           uidObj.freeze_wait_count = 12 * 5
           uidObj.err_count = 0
         }
@@ -147,7 +147,7 @@ async function main() {
       }).then((res)=>{
         if (res === 'FAIL') return
         if (uidObj.err_count > 0) {
-          console.log('成功，错误计数归零');
+          console.log(`${ new Date().toLocaleString() } 成功，错误计数归零`);
           uidObj.err_count = 0
         }
       })
